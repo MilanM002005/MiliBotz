@@ -1,4 +1,5 @@
 # MiliBotz 
+![Image Preview](Screenshot%202025-09-06%20140137.png)
 
 **MiliBotz** is a WhatsApp-style AI chatbot powered by Groq API.  
 It can answer general questions or healthcare-related queries through a sleek, interactive Streamlit interface.
