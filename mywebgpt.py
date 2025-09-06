@@ -10,13 +10,10 @@ load_dotenv()
 
 # Use your Groq API key
 API_KEY = os.getenv("GROQ_API_KEY")
-
-# ================== Data Models ==================
 class Message(BaseModel):
     role: str
     content: str
 
-# ================== Groq Completion ==================
 async def make_completion(messages: List[Message], nb_retries: int = 3, delay: int = 30) -> Optional[str]:
     header = {
         "Content-Type": "application/json",
@@ -47,10 +44,10 @@ async def make_completion(messages: List[Message], nb_retries: int = 3, delay: i
         logger.error(f"Request failed: {e}")
     return None
 
-# ================== Streamlit UI ==================
+
 st.set_page_config(page_title="MiliBotz", page_icon="", layout="centered")
 
-# Sidebar
+
 with st.sidebar:
     st.title("⚙️ Settings")
     st.markdown("You are chatting with **MiliBotz**, powered by Groq ")
@@ -58,18 +55,18 @@ with st.sidebar:
     if st.button("Clear Chat"):
         st.session_state["history"] = []
 
-# Title
+
 st.markdown("<h1 style='text-align: center;'> Welcome to <span style='color: #4CAF50;'>MiliBotz</span></h1>", unsafe_allow_html=True)
 st.markdown("<p style='text-align: center; color: gray;'>Your AI assistant .</p>", unsafe_allow_html=True)
 
-# Session state
+
 if "history" not in st.session_state:
     st.session_state["history"] = []
 
 if "input_key" not in st.session_state:
-    st.session_state["input_key"] = 0   # to reset text_input
+    st.session_state["input_key"] = 0   
 
-# Display messages WhatsApp style
+
 for msg in st.session_state["history"]:
     if msg.role == "user":
         st.markdown(
@@ -82,20 +79,20 @@ for msg in st.session_state["history"]:
             unsafe_allow_html=True
         )
 
-# Input at bottom
+
 st.markdown("---")
 user_input = st.text_input(" Type your message:", key=f"input_{st.session_state['input_key']}")
 
 if st.button("Send") and user_input.strip():
     st.session_state["history"].append(Message(role="user", content=user_input))
 
-    # Get bot reply
+  
     response = asyncio.run(make_completion(st.session_state["history"]))
     if response is None:
         response = " Sorry, I couldn’t fetch a reply. Try again!"
     st.session_state["history"].append(Message(role="assistant", content=response))
 
-    # increment key → this clears the text box
+  
     st.session_state["input_key"] += 1
 
     st.rerun()
